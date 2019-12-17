@@ -1,11 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace ParseEdifact
 {
     class Program
     {
+        private static string ediFile;
+        private static Dictionary<string, string> specialChars;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -15,8 +19,8 @@ namespace ParseEdifact
             // Parse the 'LOC' statements
             // Output the parsed data into arrays
             string path = "D:\\Users\\marcus\\Projects\\Code\\Study\\ParseEdifact\\ParseEdifact\\ParseEdifact\\Data\\sample.edi";
-            var ediFileString = ParseEdiFileToString(path);
-            
+            ediFile = ParseEdiFileToString(path);
+            ParseEDISpecialCharacters();
         }
 
         /// <summary>
@@ -43,6 +47,42 @@ namespace ParseEdifact
                 }
             }
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Checks if the EDI string contains the UNA declaration and parses out the special characters to a Dictionary
+        /// </summary>
+        private static void ParseEDISpecialCharacters()
+        {
+            specialChars = new Dictionary<string, string>();
+
+            if (ediFile.Contains("UNA"))
+            {
+                var unaIndex = ediFile.IndexOf("UNA");
+                var chars = ediFile.Substring(unaIndex + 3, 6);
+                var i = 0;
+                specialChars.Add("Component Separator", chars.Substring(i, 1));
+                i++;
+                specialChars.Add("Data Separator", chars.Substring(i, 1));
+                i++;
+                specialChars.Add("Decimal Mark", chars.Substring(i, 1));
+                i++;
+                specialChars.Add("Reverse", chars.Substring(i, 1));
+                i = i + 2;
+                specialChars.Add("Segment Terminator", chars.Substring(i, 1));
+            }
+        }
+
+        /// <summary>
+        /// Parse an EDI formatted string to output the elements of the 
+        /// </summary>
+        /// <returns></returns>
+        private static List<string> ParseSegmentToArray()
+        {
+            var locStatements = new List<string>();
+
+            return locStatements;
+
         }
     }
 }
