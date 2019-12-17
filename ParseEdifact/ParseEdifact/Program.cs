@@ -20,7 +20,9 @@ namespace ParseEdifact
             // Output the parsed data into arrays
             string path = "D:\\Users\\marcus\\Projects\\Code\\Study\\ParseEdifact\\ParseEdifact\\ParseEdifact\\Data\\sample.edi";
             ediFile = ParseEdiFileToString(path);
-            ParseEDISpecialCharacters();
+            InitialiseEDISpecialCharacters();
+
+
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace ParseEdifact
         /// <summary>
         /// Checks if the EDI string contains the UNA declaration and parses out the special characters to a Dictionary
         /// </summary>
-        private static void ParseEDISpecialCharacters()
+        private static void InitialiseEDISpecialCharacters()
         {
             specialChars = new Dictionary<string, string>();
 
@@ -67,9 +69,16 @@ namespace ParseEdifact
                 i++;
                 specialChars.Add("Decimal Mark", chars.Substring(i, 1));
                 i++;
-                specialChars.Add("Reverse", chars.Substring(i, 1));
+                specialChars.Add("Release", chars.Substring(i, 1));
                 i = i + 2;
                 specialChars.Add("Segment Terminator", chars.Substring(i, 1));
+            } else
+            {
+                specialChars.Add("Component Separator", ":");
+                specialChars.Add("Data Separator", "+");
+                specialChars.Add("Decimal Mark", ".");
+                specialChars.Add("Release", "?");
+                specialChars.Add("Segment Terminator", "'");
             }
         }
 
