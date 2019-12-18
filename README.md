@@ -22,7 +22,7 @@ DTM+182:20090527:102&#39;
 ```
 
 ## Solution
-My solution assumes that the source EDIFACT data is received as an `.edi` file, as opposed to a data stream, or any other data format such as JSON.
+This solution assumes that the source EDIFACT data is received as an `.edi` file, as opposed to a data stream, or any other data format such as JSON.
 
 The solution parses the file into a string. The string is then read for a UNA segment to define the file's separators and creates a dictionary based on the segment, or uses the standard's defaults.
 
