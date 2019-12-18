@@ -13,12 +13,13 @@ namespace ParseEdifact
         static void Main(string[] args)
         {
             // I am assuming that the input EDIFACT data can be received as a file because I'm not familiar with how EDIFACT data are typically handled.
-            // If the EDIFACT data is received in a different format then a different function would be needed.
-            string path = "D:\\Users\\marcus\\Projects\\Code\\Study\\ParseEdifact\\ParseEdifact\\ParseEdifact\\Data\\sample.edi";
+            // If the EDIFACT data is received in a different format then a different function could be implemented.
+            string path = @"..\..\..\Data\sample.edi";
             ediFile = ParseEdiFileToString(path);
             InitialiseEDISpecialCharacters();
 
             var locArray = ParseSegmentToArray("LOC");
+            Console.WriteLine("Complete");
         }
 
         /// <summary>
@@ -30,6 +31,8 @@ namespace ParseEdifact
         {
             if (!File.Exists(path))
             {
+                // This would be better handled using an error messaging service to advise the user of the invalid file loc.
+                // I viewed implementing this messaging service as out of the scope of this test.
                 throw new FileNotFoundException($"File Not Found at the location: {path}");
             }
 
