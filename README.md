@@ -20,3 +20,10 @@ DTM+9:20090527:102&#39;
 DTM+268:20090626:102&#39;
 DTM+182:20090527:102&#39;
 ```
+
+## Solution
+My solution assumes that the source EDIFACT data is received as an `.edi` file, as opposed to a data stream, or any other data format such as JSON.
+
+The solution parses the file into a string. The string is then read for a UNA segment to define the file's separators and creates a dictionary based on the segment, or uses the standard's defaults.
+
+The EDIFACT string is parsed into arrays of the requested segments, `LOC`, and the elements of this array are then split by the message separator `+` producing the final `[5,2]` string array.
