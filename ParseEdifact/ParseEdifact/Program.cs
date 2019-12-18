@@ -12,17 +12,13 @@ namespace ParseEdifact
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
-            // Need to receive the message
-            // Read through the message to locate the 'LOC' statements
-            // Parse the 'LOC' statements
-            // Output the parsed data into arrays
+            // I am assuming that the input EDIFACT data can be received as a file because I'm not familiar with how EDIFACT data are typically handled.
+            // If the EDIFACT data is received in a different format then a different function would be needed.
             string path = "D:\\Users\\marcus\\Projects\\Code\\Study\\ParseEdifact\\ParseEdifact\\ParseEdifact\\Data\\sample.edi";
             ediFile = ParseEdiFileToString(path);
             InitialiseEDISpecialCharacters();
 
-
+            var locArray = ParseSegmentToArray("LOC");
         }
 
         /// <summary>
@@ -83,15 +79,37 @@ namespace ParseEdifact
         }
 
         /// <summary>
-        /// Parse an EDI formatted string to output the elements of the 
+        /// Parse an EDI formatted string to output the elements of the specified segments as a list of arrays
         /// </summary>
         /// <returns></returns>
-        private static List<string> ParseSegmentToArray()
+        private static string[,] ParseSegmentToArray(string segmentCode)
         {
-            var locStatements = new List<string>();
+            var segmentStartIndex = ediFile.IndexOf(segmentCode);
+            var temp = ediFile.Substring(segmentStartIndex).Replace("\r\n","");
+            // specialChars.GetValueOrDefault("Segment Terminator");
+            
+            // Split the EDI file into an array of segments using the provided code as the separator
+            var segmentArray = temp.Split(segmentCode, StringSplitOptions.RemoveEmptyEntries);
 
-            return locStatements;
+            // Trim the last element in the array so that it does not contain unwanted segments
+            var lastSegmentIndex = segmentArray.Length - 1;
+            var terminatorIndex = segmentArray[lastSegmentIndex].IndexOf(specialChars.GetValueOrDefault("Segment Terminator"));
+            segmentArray[lastSegmentIndex] = segmentArray[lastSegmentIndex].Remove(terminatorIndex);
+            
+            // Populate the final array with the elements of each segment
+            var elementsArray = new string[segmentArray.Length, 2];
+            for (var i = 0; i < segmentArray.Length; i++)
+            {
+                // Remove the terminator characters, we don't need them anymore, then split the segment on the data separator
+                var tempElementArray = segmentArray[i].Replace(specialChars.GetValueOrDefault("Segment Terminator"), "")
+                    .Split(specialChars.GetValueOrDefault("Data Separator"), StringSplitOptions.RemoveEmptyEntries);
+                for (int j = 0; j < tempElementArray.Length; j++)
+                {
+                    elementsArray[i, j] = tempElementArray[j];
+                }
+            }
 
+            return elementsArray;
         }
     }
 }
